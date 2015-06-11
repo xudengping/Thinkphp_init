@@ -39,6 +39,7 @@ class AdminController extends CommonController {
     }
 
     public function admin_add(){
+       // 获取id参数 自动判断get或者post
 		$id = I('id', 0);
 
 		$model = D('Admin');

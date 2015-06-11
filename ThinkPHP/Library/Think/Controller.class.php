@@ -38,6 +38,7 @@ abstract class Controller {
         $this->view     = Think::instance('Think\View');
         //控制器初始化
         if(method_exists($this,'_initialize'))
+        // 可以通过自定义的_initialize 方法实现一些初始化信息
             $this->_initialize();
     }
 

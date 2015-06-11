@@ -267,7 +267,9 @@ function T($template='',$layer=''){
  * @return mixed
  */
 function I($name,$default='',$filter=null,$datas=null) {
+    // strpos 查找第一次出现的位置
     if(strpos($name,'.')) { // 指定参数来源
+        // 返回长度为2的数组,第一个赋值给$method，第二个赋值给$name
         list($method,$name) =   explode('.',$name,2);
     }else{ // 默认为自动判断
         $method =   'param';

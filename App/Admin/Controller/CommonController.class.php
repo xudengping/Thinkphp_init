@@ -14,22 +14,27 @@ use Admin\Org\Menu;
 class CommonController extends BaseController {
 	protected $page_num = 10;
 
+	// 实例化后会直接执行  初始化函数 也就类似于构造器了
 	public function _initialize() {
-
+	show_bug($_SESSION);
 		if (empty($_SESSION[C('MENU_USER_AUTH_KEY')])) {
 			// 没有登录
+			//跳转到 默认认证网关,该系统的登陆页面
 			$this->redirect(C('MENU_USER_AUTH_GATEWAY'));
 		}
 		// 当前的操作
+		//show_bug(get_defined_constants(true));
 		$where['module_name'] = MODULE_NAME;
 		$where['controller_name'] = CONTROLLER_NAME;
 		$where['action_name'] = ACTION_NAME;
 		$where['param'] = I('param', '');
+		// MENU_TABLE_NODE 菜单节点表名称,不要表前缀
 		$active_info = D(C('MENU_TABLE_NODE'))->where($where)->find();
 
 		if (empty($active_info)) {
 			// 自动添加节点，正式运行后要注释掉
 			$this->auto_add_node();
+			
 			$this->out('error', '对不起，未找到对应的操作', __MODULE__.'/Index/index');
 		} else {
 			// 如果有需要对标题替换的
@@ -46,11 +51,14 @@ class CommonController extends BaseController {
 		$_ajax = I('is_ajax', '');
 		if ( !IS_AJAX  || $_ajax ) {
 			$admin_menu_list = Menu::get_menu_list($active_info);
+			show_bug($admin_menu_list);
+			show_bug($active_info);
 			$this->assign('admin_menu_list', $admin_menu_list);
 			$this->assign('active_info', $active_info);
 		}
 		// 开启了验证
 		if (C('MENU_USER_AUTH_ON')) {
+		    //如果开启了验证的话过滤掉无需验证的模块、 控制器
 			// 并且当前操作不在，无需认证模块，无需认证的控制器 中
 			if (!in_array(MODULE_NAME, explode(',', C('MENU_NOT_AUTH_MODULE'))) && !in_array(CONTROLLER_NAME, explode(',', C('MENU_NOT_AUTH_CONTROLLER')))) {
 				// 用户权限检查

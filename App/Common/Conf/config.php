@@ -17,15 +17,21 @@ $config_all = array(
 	'SHOW_PAGE_TRACE' =>true,
 );
 
-switch ($_SERVER['SERVER_NAME']) {
-	case 'localhost':
-		$env = 'dev';
-		break;
-
-	default:
-		$env = 'dev';
-		break;
+if(substr_count($_SERVER['SCRIPT_FILENAME'],'Thinkphp')>0){
+   $env = 'dev';
+}else{
+   $env = 'dev2';
 }
+
+//switch ($_SERVER['SCRIPT_FILENAME']) {
+//	case 'localhost':
+//		$env = 'dev';
+//		break;
+//
+//	default:
+//		$env = 'dev';
+//		break;
+//}
 $config_env = require $env.'_config.php';
 
 return array_merge($config_all, $config_env);

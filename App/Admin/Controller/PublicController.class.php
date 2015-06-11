@@ -17,7 +17,6 @@ class PublicController extends BaseController {
     }
 
     public function login(){
-
     	$this->display();
     }
 
@@ -34,12 +33,15 @@ class PublicController extends BaseController {
 		if (empty($password)) {
 			$this->out('error', '请填写密码');
 		}
+		
+		// 验证码验证
 		// array('verify_code'=>'当前验证码的值','verify_time'=>'验证码生成的时间戳')
 		$verify = new \Think\Verify();
 		if (!$verify->check($verify_code)) {
 			$this->out('fail', '验证码不正确或已过期，请重试');
 		}
 
+		// 实例化Admin对象并且做数据库查询操作
 		$model = D('Admin');
 		$where['adminname'] = $adminname;
 		$info = $model->where($where)->find();
@@ -52,13 +54,15 @@ class PublicController extends BaseController {
 				if ($info['status'] != 1) {
 					$this->out('error', '用户被禁止');
 				}
-			}
+			} 
 		}
 
+		// 将用户信息存储到session中
 		session('adminname', $info['adminname']);
 		session('admin_id', $info['id']);
 		session('admin_info', $info);
 
+		// 修改指定的对象的login_time值
 		$model->where($info['id'])->save(array('login_time' => time()));
 
     	$this->out('ok', 'Success !');
